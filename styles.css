@@ -466,10 +466,11 @@ h1, h2, h3, p { margin: 0; }
 .plate.leads .chip-l:last-child { margin-right: -8px; }
 .chip-t {
   width: 24px; height: 24px; flex: none; border-radius: 50%; display: grid; place-items: center;
-  font-size: .86rem; font-weight: 900; color: #063a22;
-  background: linear-gradient(180deg, #bff8da, #5fe3a1 55%, #1f9c63);
-  box-shadow: 0 2px 8px rgba(95, 227, 161, .45);
+  font-size: 1.05rem; line-height: 1; color: #1b1d2e;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
 }
+.chip-t.red { color: #d3213f; }
 .plate .chip-t:last-child { margin-right: -8px; }
 .plate.dealer { border-color: var(--gold); background: rgba(255, 207, 92, .12); box-shadow: 0 0 14px rgba(255, 207, 92, .28); }
 .plate.dealer.active { border-color: var(--gold); box-shadow: 0 0 0 4px color-mix(in srgb, var(--pc) 45%, transparent), 0 0 14px rgba(255, 207, 92, .28); }
@@ -608,7 +609,7 @@ h1, h2, h3, p { margin: 0; }
   .bubble { font-size: .95rem; padding: 4px 11px; }
   .chip-d { font-size: .64rem; padding: 2px 7px; margin-right: -5px; }
   .chip-l { font-size: .64rem; padding: 2px 6px; }
-  .chip-t { width: 20px; height: 20px; font-size: .74rem; }
+  .chip-t { width: 20px; height: 20px; font-size: .9rem; }
   .plate .chip-t:last-child { margin-right: -5px; }
   .plate.leads { outline-width: 2px; outline-offset: 2px; }
   .plate.leads .chip-l:last-child { margin-right: -5px; }

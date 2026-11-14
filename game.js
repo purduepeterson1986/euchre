@@ -335,7 +335,7 @@
     var H = G.H, out = H && H.sitting === p;
     var dealer = G.dealer === p, leads = leaderNow() === p;
     return '<div class="plate t' + E.teamOf(p) + (G.active === p ? ' active' : '') + (out ? ' out' : '') + (dealer ? ' dealer' : '') + (leads ? ' leads' : '') + '" data-p="' + p + '"><span class="pname">' + nm(p) + '</span>' +
-      (H && H.maker === p ? '<span class="chip-t" title="Named trump" aria-label="Named trump">T</span>' : '') +
+      (H && H.maker === p && H.trump != null && H.trump >= 0 ? '<span class="chip-t' + (isRed(H.trump) ? ' red' : '') + '" title="Named ' + E.SUIT_NAMES[H.trump].toLowerCase() + ' as trump" aria-label="Named ' + E.SUIT_NAMES[H.trump].toLowerCase() + ' as trump">' + SYM[H.trump] + '</span>' : '') +
       (leads ? '<span class="chip-l">Leads</span>' : '') + (dealer ? '<span class="chip-d">Dealer</span>' : '') + '</div>';
   }
   function renderSeats2() {
