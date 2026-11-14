@@ -457,6 +457,13 @@ h1, h2, h3, p { margin: 0; }
   background: linear-gradient(180deg, #ffe08a, var(--gold) 45%, var(--gold-deep));
   box-shadow: 0 2px 8px rgba(240, 170, 40, .45);
 }
+.plate.leads { outline: 3px solid #fff; outline-offset: 3px; }
+.chip-l {
+  flex: none; padding: 3px 9px; border-radius: 999px;
+  font-size: .74rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase;
+  color: #1b1d2e; background: #fff;
+}
+.plate.leads .chip-l:last-child { margin-right: -8px; }
 .plate.dealer { border-color: var(--gold); background: rgba(255, 207, 92, .12); box-shadow: 0 0 14px rgba(255, 207, 92, .28); }
 .plate.dealer.active { border-color: var(--gold); box-shadow: 0 0 0 4px color-mix(in srgb, var(--pc) 45%, transparent), 0 0 14px rgba(255, 207, 92, .28); }
 .backs { display: flex; min-height: calc(var(--cw) * .42 * 1.4); align-items: center; }
@@ -593,6 +600,9 @@ h1, h2, h3, p { margin: 0; }
   .plate { padding: 4px 10px; font-size: .9rem; }
   .bubble { font-size: .95rem; padding: 4px 11px; }
   .chip-d { font-size: .64rem; padding: 2px 7px; margin-right: -5px; }
+  .chip-l { font-size: .64rem; padding: 2px 6px; }
+  .plate.leads { outline-width: 2px; outline-offset: 2px; }
+  .plate.leads .chip-l:last-child { margin-right: -5px; }
   .table { gap: calc(var(--cw) * .16) calc(var(--cw) * .12); }
   .seat-n { flex-wrap: wrap; justify-content: center; }
   .actions .btn { padding: 0 14px; min-height: 46px; }

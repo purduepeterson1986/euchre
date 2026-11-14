@@ -324,11 +324,18 @@
     return '<div class="bubble show' + (b.call ? ' call' : '') + (flash ? ' pop' : '') + '"' +
       (flash ? ' style="animation-delay:-' + Math.max(0, age) + 'ms"' : '') + '>' + b.html + '</div>';
   }
+  // Who plays the first card of the trick: the player on the dealer's left to start the hand,
+  // then whoever won the last trick. Nobody once the hand is over.
+  function leaderNow() {
+    var H = G.H;
+    if (!H || G.phase === 'handover' || G.phase === 'over' || H.trickNo >= 5) return -1;
+    return G.phase === 'play' ? H.leader : E.nextSeat(H, G.dealer);
+  }
   function plateHTML(p) {
     var H = G.H, out = H && H.sitting === p;
-    var dealer = G.dealer === p;
-    return '<div class="plate t' + E.teamOf(p) + (G.active === p ? ' active' : '') + (out ? ' out' : '') + (dealer ? ' dealer' : '') + '" data-p="' + p + '"><span class="pname">' + nm(p) + '</span>' +
-      (dealer ? '<span class="chip-d">Dealer</span>' : '') + '</div>';
+    var dealer = G.dealer === p, leads = leaderNow() === p;
+    return '<div class="plate t' + E.teamOf(p) + (G.active === p ? ' active' : '') + (out ? ' out' : '') + (dealer ? ' dealer' : '') + (leads ? ' leads' : '') + '" data-p="' + p + '"><span class="pname">' + nm(p) + '</span>' +
+      (leads ? '<span class="chip-l">Leads</span>' : '') + (dealer ? '<span class="chip-d">Dealer</span>' : '') + '</div>';
   }
   function renderSeats2() {
     var H = G.H;
