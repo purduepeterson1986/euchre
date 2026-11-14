@@ -17,9 +17,9 @@
   ];
   var SEAT_ORDER = [0, 2, 1, 3];   // order shown on the settings screen: your team first
   var SPEEDS = {
-    relaxed: { name: 'Relaxed', bid: 1400, play: 1150, trick: 1900 },
-    normal:  { name: 'Normal',  bid: 900,  play: 750,  trick: 1300 },
-    fast:    { name: 'Fast',    bid: 380,  play: 320,  trick: 700 }
+    relaxed: { name: 'Relaxed', bid: 1400, play: 1150, trick: 1900, said: 900 },
+    normal:  { name: 'Normal',  bid: 900,  play: 750,  trick: 1300, said: 650 },
+    fast:    { name: 'Fast',    bid: 380,  play: 320,  trick: 700, said: 350 }
   };
   var TEAM_COLORS = ['#4db5ff', '#ff5c8a'];
   var RULES = [
@@ -253,6 +253,7 @@
   var aloneOn = false; // the "Go alone" switch
   var Debug = { auto: false };
   var toastTimer = 0;
+  var FLASH_MS = 1500; // how long a new "Pass" or "Pick it up" bubble flashes (matches the CSS)
 
   function speed() { return SPEEDS[settings.speed]; }
   function nm(p) { return esc(G.names[p]); }
@@ -266,7 +267,7 @@
     G = {
       names: names, youAreYou: !settings.names[0].trim(),
       scores: [0, 0], dealer: Math.floor(Math.random() * 4), handNo: 0,
-      H: null, phase: 'idle', active: -1, bubbles: [null, null, null, null], popSeat: -1,
+      H: null, phase: 'idle', active: -1, bubbles: [null, null, null, null],
       newCard: -1, dealt: false, counted: false
     };
     closeModal(); Confetti.clear(); hideToast();
@@ -284,7 +285,8 @@
   function setActive(p) {
     G.active = p;
     $('#game').style.setProperty('--turn', p < 0 ? '#ffcf5c' : TEAM_COLORS[E.teamOf(p)]);
-    renderSeats2();
+    var plates = document.querySelectorAll('#table .plate');
+    for (var i = 0; i < plates.length; i++) plates[i].classList.toggle('active', +plates[i].dataset.p === p);
   }
 
   function renderInfo() {
@@ -316,12 +318,17 @@
 
   function bubbleHTML(p) {
     var b = G.bubbles[p];
-    return '<div class="bubble' + (b ? ' show' + (b.call ? ' call' : '') + (G.popSeat === p ? ' pop' : '') : '') + '">' + (b ? b.html : '&nbsp;') + '</div>';
+    if (!b) return '<div class="bubble">&nbsp;</div>';
+    // The flash lasts FLASH_MS; if the seat is re-drawn part-way through, carry on from where it was.
+    var age = Date.now() - b.t, flash = age < FLASH_MS;
+    return '<div class="bubble show' + (b.call ? ' call' : '') + (flash ? ' pop' : '') + '"' +
+      (flash ? ' style="animation-delay:-' + Math.max(0, age) + 'ms"' : '') + '>' + b.html + '</div>';
   }
   function plateHTML(p) {
     var H = G.H, out = H && H.sitting === p;
-    return '<div class="plate t' + E.teamOf(p) + (G.active === p ? ' active' : '') + (out ? ' out' : '') + '"><span class="pname">' + nm(p) + '</span>' +
-      (G.dealer === p ? '<span class="chip-d" title="Dealer">D</span>' : '') + '</div>';
+    var dealer = G.dealer === p;
+    return '<div class="plate t' + E.teamOf(p) + (G.active === p ? ' active' : '') + (out ? ' out' : '') + (dealer ? ' dealer' : '') + '" data-p="' + p + '"><span class="pname">' + nm(p) + '</span>' +
+      (dealer ? '<span class="chip-d">Dealer</span>' : '') + '</div>';
   }
   function renderSeats2() {
     var H = G.H;
@@ -334,7 +341,6 @@
     var note = '';
     if (H && H.sitting === 0) note = '<span class="note">' + nm(2) + ' is going alone, so you sit this hand out.</span>';
     $('#you-line').innerHTML = plateHTML(0) + bubbleHTML(0) + note;
-    G.popSeat = -1;
   }
 
   function renderHand() {
@@ -404,7 +410,7 @@
 
   function renderAll() { renderInfo(); renderScore(); renderSeats2(); renderHand(); renderUpcard(); renderActions(); }
 
-  function say(p, html, call) { G.bubbles[p] = { html: html, call: !!call }; G.popSeat = p; }
+  function say(p, html, call) { G.bubbles[p] = { html: html, call: !!call, t: Date.now() }; }
 
   function showToast(icoHTML, title, sub, ms, low) {
     var t = $('#toast');
@@ -510,8 +516,12 @@
       if (act.order) {
         E.orderUp(H, p, act.alone); called = true;
         say(p, (p === G.dealer ? 'I’ll pick it up' : 'Pick it up') + (act.alone ? ', alone!' : ''), true);
-      } else { E.pass(H, p); say(p, 'Pass'); Sound.play('pass'); }
+      } else {
+        E.pass(H, p); say(p, 'Pass'); Sound.play('pass');
+        setStatus(says(p, 'pass', 'passes') + '.');
+      }
       renderSeats2(); renderActions();
+      if (!called) { await sleep(sp.said); if (my !== gen) return; }
     }
 
     if (called) {
@@ -534,6 +544,8 @@
     } else {
       // ----- round 2: name a different suit -----
       E.turnDown(H); renderUpcard();
+      setStatus('Everyone passed. The ' + cardName(H.upcard) + ' is turned down.');
+      await sleep(sp.said + 300); if (my !== gen) return;
       for (i = 1; i <= 4 && !called; i++) {
         p = (G.dealer + i) & 3;
         var forced = i === 4;
@@ -548,8 +560,12 @@
         if (act.suit >= 0) {
           E.callSuit(H, p, act.suit, act.alone); called = true;
           say(p, symHTML(act.suit) + ' ' + E.SUIT_NAMES[act.suit] + (act.alone ? ', alone!' : ''), true);
-        } else { E.pass(H, p); say(p, 'Pass'); Sound.play('pass'); }
+        } else {
+          E.pass(H, p); say(p, 'Pass'); Sound.play('pass');
+          setStatus(says(p, 'pass', 'passes') + '.');
+        }
         renderSeats2(); renderActions();
+        if (!called) { await sleep(sp.said); if (my !== gen) return; }
       }
       G.phase = 'deal2'; announceTrump(); renderAll();
     }
