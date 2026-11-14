@@ -396,7 +396,7 @@ h1, h2, h3, p { margin: 0; }
   width: 44px; height: 44px; flex: none; border-radius: 50%; display: grid; place-items: center;
   font-size: 1.7rem; line-height: 1; background: rgba(255, 255, 255, .1); color: var(--ink-faint);
 }
-.trumpbox.set .trump-sym { background: #fff; color: #1b1d2e; box-shadow: 0 3px 10px rgba(0, 0, 0, .4); }
+.trumpbox.set .trump-sym { background: #fff; color: #1b1d2e; box-shadow: 0 3px 10px rgba(0, 0, 0, .4); font-size: 2.6rem; overflow: hidden; }
 .trumpbox.set .trump-sym.red { color: #d3213f; }
 .trump-text { line-height: 1.15; min-width: 0; }
 .trump-text span { display: block; font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
@@ -466,7 +466,7 @@ h1, h2, h3, p { margin: 0; }
 .plate.leads .chip-l:last-child { margin-right: -8px; }
 .chip-t {
   width: 24px; height: 24px; flex: none; border-radius: 50%; display: grid; place-items: center;
-  font-size: 1.05rem; line-height: 1; color: #1b1d2e;
+  font-size: 1.45rem; line-height: 1; color: #1b1d2e; overflow: hidden;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
 }
@@ -598,6 +598,7 @@ h1, h2, h3, p { margin: 0; }
   .pcard .called { display: none; }
   .trumpbox { padding: 6px 10px; gap: 8px; border-radius: 14px; }
   .trump-sym { width: 36px; height: 36px; font-size: 1.4rem; }
+  .trumpbox.set .trump-sym { font-size: 2.15rem; }
   .trump-text b { font-size: .95rem; }
   .status { min-height: 44px; }
   .status-main { font-size: 1rem; }
@@ -609,7 +610,7 @@ h1, h2, h3, p { margin: 0; }
   .bubble { font-size: .95rem; padding: 4px 11px; }
   .chip-d { font-size: .64rem; padding: 2px 7px; margin-right: -5px; }
   .chip-l { font-size: .64rem; padding: 2px 6px; }
-  .chip-t { width: 20px; height: 20px; font-size: .9rem; }
+  .chip-t { width: 20px; height: 20px; font-size: 1.2rem; }
   .plate .chip-t:last-child { margin-right: -5px; }
   .plate.leads { outline-width: 2px; outline-offset: 2px; }
   .plate.leads .chip-l:last-child { margin-right: -5px; }
@@ -634,6 +635,7 @@ h1, h2, h3, p { margin: 0; }
   .pcard-score span, .trump-text span { display: none; }
   .trumpbox { padding: 3px 10px; }
   .trump-sym { width: 30px; height: 30px; font-size: 1.2rem; }
+  .trumpbox.set .trump-sym { font-size: 1.8rem; }
   .status { min-height: 34px; }
   .status-main { font-size: 1rem; }
   .icon-btn, .controls .btn { width: 40px; height: 40px; min-height: 40px; }
