@@ -562,6 +562,8 @@ h1, h2, h3, p { margin: 0; }
 .actions .btn .sym { font-size: 1.35em; line-height: 1; }
 .actions .btn .sym.red { color: #ff7d98; }
 .actions .btn.primary .sym.red { color: #c2143a; }
+.actions .btn[data-act="pass"] { color: #3a0712; background: linear-gradient(180deg, #ffc2ca, #ff9aa8); box-shadow: 0 6px 16px rgba(255, 120, 140, .3); }
+.actions .btn[data-act="order"] { color: #0d2614; background: linear-gradient(180deg, #d2f8dc, #9ee9b2); box-shadow: 0 6px 16px rgba(110, 220, 150, .3); }
 .actions .switch { min-height: 50px; }
 .actions .note { color: var(--ink-dim); font-weight: 700; }
 .toast { top: 36%; }
