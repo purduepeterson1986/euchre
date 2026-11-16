@@ -131,6 +131,7 @@
       if (!ctx) {
         var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
         try {
+          try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not supported */ } // iPhone/iPad: play sound even with the silent switch on
           ctx = new AC(); master = ctx.createGain(); master.gain.value = 0.9;
           // A limiter keeps the louder sounds from crackling when several overlap.
           var lim = ctx.createDynamicsCompressor();
@@ -423,11 +424,20 @@
   function showToast(icoHTML, title, sub, ms, low) {
     var t = $('#toast');
     t.classList.toggle('low', !!low);       // low = over your empty hand, so the last trick stays in view
+    t.style.bottom = '';
     t.innerHTML = icoHTML + '<div><b>' + title + '</b><span>' + sub + '</span></div>';
     t.classList.add('show');
+    placeLowToast();
     clearTimeout(toastTimer);
     if (ms) toastTimer = setTimeout(hideToast, ms);
   }
+  // A low toast sits just above the button row, so it can never cover "Next hand" or "Play again".
+  function placeLowToast() {
+    var t = $('#toast'), a = $('#actions'), z = $('#table-zone');
+    if (!t || !a || !z || !t.classList.contains('low')) return;
+    t.style.bottom = Math.round(z.getBoundingClientRect().bottom - a.getBoundingClientRect().top + 10) + 'px';
+  }
+  window.addEventListener('resize', placeLowToast);
   function hideToast() { clearTimeout(toastTimer); var t = $('#toast'); if (t) t.classList.remove('show'); }
 
   /* ================= Waiting for the person ================= */
@@ -627,12 +637,12 @@
     showToast('<div class="toast-ico">' + (us ? '🎉' : '😮') + '</div>', title, sub, 0, true);
     if (!over) {
       G.phase = 'handover'; Sound.play(us ? 'handUs' : 'handThem');
-      renderActions();
+      renderActions(); placeLowToast();
       var b = $('#actions .btn.primary'); if (b) b.focus({ preventScroll: true });
       if (Debug.auto) setTimeout(function () { if (my === gen && G.phase === 'handover') nextHand(); }, 300);
       return;
     }
-    G.phase = 'over'; renderActions();
+    G.phase = 'over'; renderActions(); placeLowToast();
     var won = G.scores[0] >= E.WIN_SCORE;
     if (!G.counted) { G.counted = true; if (won) settings.won++; else settings.lost++; saveSettings(); }
     setTimeout(function () { if (my === gen && G.phase === 'over') showGameOver(won); }, 1500);
@@ -668,7 +678,7 @@
   }
   function askSettings() {
     if (!gameInProgress()) { toSettings(); return; }
-    confirmModal('⚙️', 'Leave this game?', 'Going to Settings ends this game and clears the scores.', 'Leave game', toSettings);
+    confirmModal('⚙️', 'Leave this game?', 'Going to Settings ends this game and clears the scores.', 'Go to settings', toSettings);
   }
 
   /* ================= Top-bar buttons ================= */
